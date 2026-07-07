@@ -5,7 +5,7 @@ import requests
 app = Flask(__name__)
 
 # URL Endpoint Hugging Face Space Anda
-HF_API_URL = "https://andriandri-cs-komplain-bot.hf.space/predict"
+HF_API_URL = "https://uptight-ankle-headway.ngrok-free.dev/predict"
 
 @app.route("/", methods=["GET"])
 def home():
