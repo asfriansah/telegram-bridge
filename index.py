@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, jsonify
 import requests
 
+# Nama variabel WAJIB 'app'
 app = Flask(__name__)
 
 # URL Endpoint Hugging Face Space Anda
@@ -19,17 +20,12 @@ def telegram_webhook():
             chat_id = data["message"]["chat"]["id"]
             user_input = data["message"]["text"]
             
-            # Oper data teks ke Hugging Face dengan timeout super cepat (1 detik)
+            # Kirim data ke Hugging Face dengan timeout 1 detik agar Vercel bisa langsung merespons Telegram
             try:
                 requests.post(HF_API_URL, json={"chat_id": chat_id, "text": user_input}, timeout=1)
             except requests.exceptions.Timeout:
-                # Abaikan timeout karena HF butuh waktu lama di background
                 pass
     except Exception as e:
         print(f"Error pada jembatan: {e}")
         
-    # KUNCI UTAMA: Langsung jawab OK ke Telegram dalam hitungan milidetik
     return jsonify({"status": "ok"}), 200
-
-if __name__ == "__main__":
-    app.run(debug=True)
