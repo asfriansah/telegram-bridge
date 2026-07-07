@@ -15,19 +15,24 @@ def home():
 def telegram_webhook():
     try:
         data = request.get_json()
-        if "message" in data and "text" in data["message"]:
+        
+        # Memastikan data berasal dari chat Telegram asli
+        if data and "message" in data and "text" in data["message"]:
+            # 1. Ambil ID asli pengguna Telegram yang mengirim pesan
             chat_id = data["message"]["chat"]["id"]
+            # 2. Ambil teks asli yang diketik pengguna di Telegram
             user_input = data["message"]["text"]
             
-            # Oper data ke Hugging Face dengan timeout cepat (1 detik)
+            # KUNCI PERBAIKAN: Kirim 'chat_id' dan 'text' ASLI ke Hugging Face, bukan angka 123456789!
             try:
                 requests.post(HF_API_URL, json={"chat_id": chat_id, "text": user_input}, timeout=1)
+                print(f"Berhasil mengoper pesan asli dari {chat_id} ke Hugging Face")
             except requests.exceptions.Timeout:
                 pass
+                
     except Exception as e:
         print(f"Error pada jembatan: {e}")
         
     return jsonify({"status": "ok"}), 200
-
 # Baris penyelamat: mengekspos aplikasi ke serverless handler Vercel
 handler = app
